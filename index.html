@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CBSE Class XII Improvement Results</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Merriweather:wght@400;700&display=swap');
+
+        :root {
+            --primary-color: #000080;
+            --secondary-color: #e6f3ff;
+            --tertiary-color: #dbeaff;
+            --background-color: #f0f8ff;
+            --text-color: #333;
+            --border-color: #ccc;
+            --success-color: #28a745;
+            --error-color: #d9534f;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            font-size: clamp(14px, 2.5vw, 16px);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Top Banner/Header */
+        .top-banner {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+        }
+        .top-banner .logo-text {
+            font-family: 'Merriweather', serif;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        .top-banner .sub-text {
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            margin: 5px 0 0;
+        }
+
+        /* Main Content Container */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 15px;
+            flex-grow: 1;
+        }
+        
+        /* Main Content Heading */
+        .main-heading {
+            text-align: center;
+            font-size: clamp(1.5rem, 3.5vw, 2rem);
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-family: 'Merriweather', serif;
+        }
+
+        /* The Card for Login and Results */
+        .card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 128, 0.2);
+            animation: fadeIn 1s ease-in-out;
+            border: 1px solid var(--tertiary-color);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-section {
+            transition: opacity 0.5s ease-in-out;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            font-size: clamp(14px, 2.5vw, 16px);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 0, 128, 0.3);
+        }
+        .security-pin-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .security-pin {
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: var(--secondary-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 5px;
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: clamp(14px, 2.5vw, 16px);
+            user-select: none;
+        }
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .button-group button {
+            padding: 12px 25px;
+            font-size: clamp(14px, 2.5vw, 16px);
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        #submitBtn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        #submitBtn:hover:not(:disabled) {
+            background-color: #000066;
+            transform: translateY(-2px);
+        }
+        #submitBtn:disabled {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+        }
+        #resetBtn {
+            background-color: #f0f0f0;
+            color: var(--text-color);
+        }
+        #resetBtn:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        /* --- Dynamic Elements --- */
+        .feedback-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+        }
+        .feedback-message.error {
+            background-color: #ffe6e6;
+            color: var(--error-color);
+        }
+
+        .loading-container {
+            text-align: center;
+            margin-top: 30px;
+            display: none;
+        }
+        .spinner {
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        .progress-bar-container {
+            width: 80%;
+            height: 15px;
+            background-color: #f3f3f3;
+            border-radius: 10px;
+            margin: 0 auto 15px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            width: 0;
+            height: 100%;
+            background-color: var(--success-color);
+            transition: width 0.5s ease-in-out;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Result Section - now inside the card */
+        .result-section {
+            display: none;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        .result-section h3 {
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-top: 0; /* Fixes the gap */
+            margin-bottom: 15px;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            border: 1px solid var(--primary-color);
+            font-size: clamp(12px, 2.5vw, 16px);
+        }
+        th, td {
+            border: 1px solid var(--primary-color);
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: var(--secondary-color);
+            font-weight: bold;
+            color: var(--primary-color);
+            text-align: center;
+        }
+        .personal-details th {
+            text-align: left;
+        }
+        .marks-table th, .marks-table td {
+            text-align: center;
+        }
+        .result-line {
+            font-weight: bold;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: var(--primary-color);
+            margin: 15px 0;
+            text-align: center;
+        }
+        .note, .disclaimer {
+            font-size: clamp(10px, 2vw, 14px);
+            margin-top: 20px;
+            background-color: var(--secondary-color);
+            padding: 15px;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 5px;
+        }
+        .note strong, .disclaimer strong {
+            color: var(--primary-color);
+        }
+        .disclaimer {
+            font-style: italic;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: clamp(10px, 1.8vw, 14px);
+            margin-top: auto;
+            color: var(--primary-color);
+            font-weight: bold;
+            border-top: 1px solid var(--primary-color);
+            padding-top: 15px;
+        }
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Media Queries for improved mobile experience */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0;
+            }
+            .card {
+                padding: 20px;
+                border-radius: 0;
+            }
+            .button-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .button-group button {
+                width: 100%;
+            }
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-banner">
+        <h1 class="logo-text">Central Board of Secondary Education</h1>
+        <p class="sub-text"><strong><a href="https://www.cbse.gov.in/" style="color: white; text-decoration: none;">https://www.cbse.gov.in/</a></strong></p>
+        <p class="sub-text"><strong>Examination Results - DEMO</strong></p>
+    </header>
+
+    <div class="container">
+        <h2 class="main-heading">Senior School Certificate Examination (Class XII - IMPROVEMENT) Results</h2>
+        <div class="card">
+            <div id="inputForm" class="form-section">
+                <div class="form-group">
+                    <label for="rollNumber">Enter Your Roll Number :</label>
+                    <input type="text" id="rollNumber" placeholder="Roll Number">
+                </div>
+                <div class="form-group">
+                    <label for="schoolNumber">Enter Your School No. :</label>
+                    <input type="text" id="schoolNumber" placeholder="School Number">
+                </div>
+                <div class="form-group">
+                    <label for="admitCardId">Enter Admit Card ID : (as given on your admit card)</label>
+                    <input type="text" id="admitCardId" placeholder="Admit Card Id">
+                </div>
+                <div class="form-group">
+                    <label for="securityPinInput">Enter Security Pin (case sensitive)</label>
+                    <div class="security-pin-container">
+                        <input type="text" id="securityPinInput" placeholder="Security Pin">
+                        <span class="security-pin" id="currentPin">Loading...</span>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button id="submitBtn">Submit</button>
+                    <button id="resetBtn">Reset</button>
+                </div>
+                <div id="feedbackMessage" class="feedback-message"></div>
+            </div>
+            
+            <div id="loadingAnimation" class="loading-container">
+                <div class="spinner"></div>
+                <p id="loadingMessage">Validating credentials...</p>
+                <div class="progress-bar-container">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+            </div>
+
+            <div id="result" class="result-section">
+                <h3 class="result-heading">Senior School Certificate Examination (Class XII) Results</h3>
+                <table class="personal-details">
+                    <tr>
+                        <th>Roll No :</th>
+                        <td><strong>12681258</strong></td>
+                    </tr>
+                    <tr>
+                        <th>Candidate Name :</th>
+                        <td><strong>SWARUP RAIYAN SWASTI</strong></td>
+                    </tr>
+                    <tr>
+                        <th>Mother's Name :</th>
+                        <td><strong>MAHMUDA PARVIN SHIMA</strong></td>
+                    </tr>
+                    <tr>
+                        <th>Father's Name :</th>
+                        <td><strong>MASSUM RANA</strong></td>
+                    </tr>
+                    <tr>
+                        <th>School's Name :</th>
+                        <td><strong>PRIVATE CANDIDATE</strong></td>
+                    </tr>
+                </table>
+
+                <table class="marks-table">
+                    <thead>
+                        <tr>
+                            <th><strong>SUB CODE</strong></th>
+                            <th><strong>SUB NAME</strong></th>
+                            <th><strong>THEORY</strong></th>
+                            <th><strong>Prac./IA/Proj.</strong></th>
+                            <th><strong>MARKS</strong></th>
+                            <th><strong>POSITIONAL GRADE</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>301</strong></td>
+                            <td><strong>ENGLISH CORE</strong></td>
+                            <td>072</td>
+                            <td>020</td>
+                            <td><strong>092</strong></td>
+                            <td><strong>A1</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>030</strong></td>
+                            <td><strong>ECONOMICS</strong></td>
+                            <td>064</td>
+                            <td>020</td>
+                            <td><strong>084</strong></td>
+                            <td><strong>B1</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>041</strong></td>
+                            <td><strong>MATHEMATICS</strong></td>
+                            <td>057</td>
+                            <td>020</td>
+                            <td><strong>077</strong></td>
+                            <td><strong>B2</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>043</strong></td>
+                            <td><strong>CHEMISTRY</strong></td>
+                            <td>045</td>
+                            <td>030</td>
+                            <td><strong>075</strong></td>
+                            <td><strong>B2</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>042</strong></td>
+                            <td><strong>PHYSICS</strong></td>
+                            <td>038</td>
+                            <td>028</td>
+                            <td><strong>066</strong></td>
+                            <td><strong>C1</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p class="result-line"><strong>RESULT :</strong> <span style="color: var(--primary-color); font-size: 16px;">APPEARED FOR IMPROVEMENT</span></p>
+
+                <div class="note">
+                    <p><strong>Note: Abbreviations used against Result</strong></p>
+                    <p><strong>R.L.</strong> - Result Later, <strong>N.E.</strong> - Not Eligible, <strong>R.W.</strong> - Result Withheld, <strong>ABST</strong> - Absent</p>
+                    <p><strong>COMP</strong> – Compartment, <strong>UFM</strong> - Unfairmeans, <strong>XXXX</strong> - Improvement, <strong>SJD</strong> - Subjudice, <strong>N.R.</strong> - Not Registered, <strong>R.T</strong> - Repeat in Theory, <strong>R.P.</strong> - Repeat in Practical, <strong>R.B.</strong> - Repeat in both</p>
+                </div>
+
+                <div class="disclaimer">
+                    <p><strong>Disclaimer:</strong> Neither NIC nor CBSE is responsible for any inadvertent error that may have crept in the results being published on NET.</p>
+                    <p>The results published on net are for Immediate information to the examinees. These cannot be treated as original mark sheets. Original mark sheets have been issued by the Board separately.</p>
+                </div>
+                
+                <div class="button-group" style="justify-content: center;">
+                    <button id="checkAnotherBtn">Check Another Result</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p><strong>This site is designed, developed and hosted by National Informatics Centre, Ministry of Electronics & Information Technology, Government of India.</strong></p>
+        <p><strong>CBSE Results</strong></p>
+        <p><strong>1/1</strong></p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputForm = document.getElementById('inputForm');
+            const resultSection = document.getElementById('result');
+            const loadingAnimation = document.getElementById('loadingAnimation');
+            const submitBtn = document.getElementById('submitBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const checkAnotherBtn = document.getElementById('checkAnotherBtn');
+            const currentPinSpan = document.getElementById('currentPin');
+            const progressBar = document.getElementById('progressBar');
+            const loadingMessage = document.getElementById('loadingMessage');
+            const feedbackMessage = document.getElementById('feedbackMessage');
+
+            const validUser = {
+                rollNumber: '12681258',
+                schoolNumber: '99999',
+                admitCardId: 'SM239934'
+            };
+
+            const securityPins = [
+                'QY6G2', 'X9P4K', 'M3J7L', 'H8R5N', 'T2W9F',
+                'P6J3K', 'B4L7M', 'Z9R2X', 'C5N8P', 'V1F3T',
+                'D7K9J', 'S4M6L', 'A2B8Q', 'E6T4R', 'G9H3W',
+                'J5K7P', 'L8M2N', 'O1R4S', 'U3V6X', 'Y7Z9F',
+                'K4L6M', 'N8P2Q', 'R3T5V', 'W6X8Y', 'Z1A3C'
+            ];
+            
+            function setSecurityPin() {
+                const pin = securityPins[Math.floor(Math.random() * securityPins.length)];
+                currentPinSpan.textContent = `Security Pin: ${pin}`;
+                currentPinSpan.dataset.pin = pin;
+            }
+
+            function resetForm() {
+                document.getElementById('rollNumber').value = '';
+                document.getElementById('schoolNumber').value = '';
+                document.getElementById('admitCardId').value = '';
+                document.getElementById('securityPinInput').value = '';
+                feedbackMessage.style.display = 'none';
+                setSecurityPin();
+            }
+
+            function animateLoading() {
+                inputForm.style.display = 'none';
+                loadingAnimation.style.display = 'block';
+                submitBtn.disabled = true;
+                
+                let progress = 0;
+                const messages = [
+                    'Validating credentials...',
+                    'Fetching results from server...',
+                    'Verifying data...',
+                    'Compiling final report...'
+                ];
+                let messageIndex = 0;
+
+                const interval = setInterval(() => {
+                    progress += 10;
+                    if (progress <= 100) {
+                        progressBar.style.width = `${progress}%`;
+                        if (progress % 20 === 0 && messageIndex < messages.length) {
+                            loadingMessage.textContent = messages[messageIndex];
+                            messageIndex++;
+                        }
+                    }
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        setTimeout(showResult, 500);
+                    }
+                }, 200);
+            }
+
+            function showResult() {
+                loadingAnimation.style.display = 'none';
+                resultSection.style.display = 'block';
+                submitBtn.disabled = false;
+            }
+
+            submitBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+                const rollNumber = document.getElementById('rollNumber').value.trim();
+                const schoolNumber = document.getElementById('schoolNumber').value.trim();
+                const admitCardId = document.getElementById('admitCardId').value.trim();
+                const securityPinInput = document.getElementById('securityPinInput').value;
+                const currentPin = currentPinSpan.dataset.pin;
+
+                if (!rollNumber || !schoolNumber || !admitCardId || !securityPinInput) {
+                    feedbackMessage.textContent = 'Please fill out all fields.';
+                    feedbackMessage.className = 'feedback-message error';
+                    feedbackMessage.style.display = 'block';
+                    return;
+                }
+
+                if (rollNumber === validUser.rollNumber && 
+                    schoolNumber === validUser.schoolNumber && 
+                    admitCardId === validUser.admitCardId &&
+                    securityPinInput === currentPin) {
+                    
+                    feedbackMessage.style.display = 'none';
+                    animateLoading();
+                    
+                } else {
+                    feedbackMessage.textContent = 'Invalid credentials or security pin. Please try again.';
+                    feedbackMessage.className = 'feedback-message error';
+                    feedbackMessage.style.display = 'block';
+                    setSecurityPin();
+                }
+            });
+
+            resetBtn.addEventListener('click', resetForm);
+            
+            checkAnotherBtn.addEventListener('click', () => {
+                resultSection.style.display = 'none';
+                inputForm.style.display = 'block';
+                resetForm();
+            });
+
+            setSecurityPin();
+        });
+    </script>
+</body>
+</html>
